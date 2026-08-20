@@ -37,6 +37,15 @@
     }
   }
 
-  // Check state every 500ms
-  setInterval(checkState, 500);
+  checkState();
+
+  const observer = new MutationObserver(() => {
+    checkState();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+  });
 })();
