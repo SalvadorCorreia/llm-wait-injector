@@ -11,9 +11,9 @@
       "matches": ["*://chatgpt.com/*", "*://claude.ai/*"],
       "css": ["payload/style.css"],
       "js": [
+        "src/registry.js",
         "src/providers/chatgpt.js",
         "src/providers/claude.js",
-        "src/registry.js",
         "src/injector.js",
         "payload/index.js"
       ],
