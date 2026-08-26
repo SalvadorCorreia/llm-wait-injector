@@ -13,7 +13,8 @@
       "matches": [
         "*://chatgpt.com/*",
         "*://claude.ai/*",
-        "*://gemini.google.com/*"
+        "*://gemini.google.com/*",
+        "*://notebook.google.com/notebook/*"
       ],
       "css": ["payload/style.css"],
       "js": [
@@ -21,6 +22,7 @@
         "src/providers/chatgpt.js",
         "src/providers/claude.js",
         "src/providers/gemini.js",
+        "src/providers/gemininotebook.js",
         "src/injector.js",
         "payload/index.js"
       ],
