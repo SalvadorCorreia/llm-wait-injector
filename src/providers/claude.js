@@ -3,7 +3,13 @@ window.ClaudeProvider = {
   urlMatch: /claude\.ai/,
 
   isGenerating: () => {
-    return document.querySelector('[data-testid="chat-input-stop"]') !== null;
+    // The stop button now relies on its aria-label instead of a data-testid
+    const stopButton = document.querySelector(
+      'button[aria-label="Stop response"]',
+    );
+
+    // We check if it exists and is not hidden by an 'inert' attribute on parent containers
+    return stopButton !== null && !stopButton.closest("[inert]");
   },
 
   getContainer: () => {
