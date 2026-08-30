@@ -15,7 +15,8 @@
         "*://claude.ai/*",
         "*://gemini.google.com/*",
         "*://notebook.google.com/notebook/*",
-        "*://www.perplexity.ai/*"
+        "*://www.perplexity.ai/*",
+        "*://chat.deepseek.com/*"
       ],
       "css": ["payload/style.css"],
       "js": [
@@ -25,6 +26,7 @@
         "src/providers/gemini.js",
         "src/providers/gemininotebook.js",
         "src/providers/perplexity.js",
+        "src/providers/deepseek.js",
         "src/injector.js",
         "payload/index.js"
       ],
