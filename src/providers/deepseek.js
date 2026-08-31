@@ -14,10 +14,15 @@ window.DeepSeekProvider = {
   },
 
   getThemeColors: () => {
-    const bodyStyles = window.getComputedStyle(document.body);
+    const target = document.querySelector("._58b31c9") || document.body;
+    const styles = window.getComputedStyle(target);
+
     return {
-      background: bodyStyles.backgroundColor || "rgb(21, 21, 23)",
-      text: bodyStyles.color || "rgb(128, 0, 128)",
+      background:
+        styles.getPropertyValue("--dsw-alias-bg-base").trim() || "#151517",
+      text:
+        styles.getPropertyValue("--dsw-alias-brand-primary").trim() ||
+        "#5686fe",
     };
   },
 };
