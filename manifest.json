@@ -18,6 +18,7 @@
         "*://www.perplexity.ai/*",
         "*://chat.deepseek.com/*",
         "*://aistudio.google.com/*",
+        "*://copilot.microsoft.com/*",
         "*://grok.com/*"
       ],
       "css": ["payload/style.css"],
@@ -30,6 +31,7 @@
         "src/providers/perplexity.js",
         "src/providers/deepseek.js",
         "src/providers/googleaistudio.js",
+        "src/providers/microsoftcopilot.js",
         "src/providers/grok.js",
         "src/injector.js",
         "payload/index.js"
