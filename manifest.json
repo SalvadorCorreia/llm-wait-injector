@@ -11,28 +11,28 @@
   "content_scripts": [
     {
       "matches": [
+        "*://aistudio.google.com/*",
+        "*://chat.deepseek.com/*",
         "*://chatgpt.com/*",
         "*://claude.ai/*",
-        "*://gemini.google.com/*",
-        "*://notebook.google.com/notebook/*",
-        "*://www.perplexity.ai/*",
-        "*://chat.deepseek.com/*",
-        "*://aistudio.google.com/*",
         "*://copilot.microsoft.com/*",
-        "*://grok.com/*"
+        "*://gemini.google.com/*",
+        "*://grok.com/*",
+        "*://notebook.google.com/notebook/*",
+        "*://www.perplexity.ai/*"
       ],
       "css": ["payload/style.css"],
       "js": [
         "src/registry.js",
         "src/providers/chatgpt.js",
         "src/providers/claude.js",
-        "src/providers/gemini.js",
-        "src/providers/gemininotebook.js",
-        "src/providers/perplexity.js",
         "src/providers/deepseek.js",
-        "src/providers/googleaistudio.js",
-        "src/providers/microsoftcopilot.js",
+        "src/providers/gemini-notebook.js",
+        "src/providers/gemini.js",
+        "src/providers/google-ai-studio.js",
         "src/providers/grok.js",
+        "src/providers/microsoft-copilot.js",
+        "src/providers/perplexity.js",
         "src/injector.js",
         "payload/index.js"
       ],
