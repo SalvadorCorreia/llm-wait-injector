@@ -19,6 +19,7 @@
         "*://duck.ai/*",
         "*://gemini.google.com/*",
         "*://grok.com/*",
+        "*://*.meta.ai/*",
         "*://notebook.google.com/notebook/*",
         "*://www.perplexity.ai/*"
       ],
@@ -33,6 +34,7 @@
         "src/providers/gemini.js",
         "src/providers/google-ai-studio.js",
         "src/providers/grok.js",
+        "src/providers/meta-ai.js",
         "src/providers/microsoft-copilot.js",
         "src/providers/perplexity.js",
         "src/injector.js",
