@@ -21,7 +21,8 @@
         "*://grok.com/*",
         "*://*.meta.ai/*",
         "*://notebook.google.com/notebook/*",
-        "*://www.perplexity.ai/*"
+        "*://www.perplexity.ai/*",
+        "*://poe.com/*"
       ],
       "css": ["payload/style.css"],
       "js": [
@@ -37,6 +38,7 @@
         "src/providers/meta-ai.js",
         "src/providers/microsoft-copilot.js",
         "src/providers/perplexity.js",
+        "src/providers/poe.js",
         "src/injector.js",
         "payload/index.js"
       ],
