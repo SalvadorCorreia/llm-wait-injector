@@ -1,32 +1,22 @@
 # llm-wait-injector
 
-A base harness for browser extensions that injects content into LLM interfaces (like ChatGPT or Claude) while waiting for a response. 
+**WARNING: Do not clone this repository directly to build an extension. To start a new project, use the [llm-wait-injector-template](https://github.com/SalvadorCorreia/llm-wait-injector-template) repository.**
 
-This repository is meant to be forked. It provides the core injection engine so you can focus on building the payload.
+This is the core injection engine for LLM wait-state browser extensions. It operates as a Git Submodule dependency. It monitors LLM interfaces (like ChatGPT or Claude), detects generation wait states, and handles the lifecycle of injecting custom payloads.
 
 ## Project Structure
 
-- `payload/`: Your workspace. Modify `index.js` and `style.css` to build your custom injection.
-- `src/`: The core engine. You do not need to touch this unless adding a new LLM provider.
-- `src/providers/`: Contains target selectors for specific LLM websites.
-- `icons/`: Store your extension icons here.
-- `manifest.json`: The extension configuration file.
+- `src/`: The core engine. Contains the injector logic and the provider registry.
+- `src/providers/`: Target selectors for specific LLM websites.
 
-## Installation
+## Usage
 
-1. Clone or download this repository.
-2. Open your browser's extension management page:
-   - Chrome/Edge: Navigate to `chrome://extensions/` and enable "Developer mode". Click "Load unpacked".
-   - Firefox: Navigate to `about:debugging#/runtime/this-firefox` and click "Load Temporary Add-on".
-3. Select the root `llm-wait-injector` folder.
+This codebase is not a standalone browser extension and does not contain a `manifest.json`. 
 
-## How to Use
+To build an extension using this engine, create a new repository from [llm-wait-injector-template](https://github.com/SalvadorCorreia/llm-wait-injector-template). That template is pre-configured to pull this repository as a submodule.
 
-To build your custom application, edit the files inside the `payload/` directory. The base engine automatically monitors the LLM page and injects your payload when a generation wait state is detected. The default payload is a simple placeholder.
+## Contributing a New LLM Provider
 
-## Adding a New LLM Provider
-
-To support a new LLM website:
-1. Create a new file in `src/providers/` (e.g., `gemini.js`).
-2. Export the URL matching pattern, the CSS selector that indicates the model is generating, and the CSS selector for the target injection container.
-3. Import and add your new provider to the exported list in `src/registry.js`.
+To add native support for a new LLM website to the core engine:
+1. Use the `dev/prompt_template.md` file. You can provide this template to an LLM alongside the target website's HTML structure to automatically generate the necessary provider code.
+2. Save the resulting file in `src/providers/` (e.g., `new-ai.js`).
