@@ -7,7 +7,7 @@
   let isEnabledForProvider = true;
 
   async function handleUrlChange() {
-    if (window.location.href === currentUrl) return;
+    if (window.location.href === currentUrl && currentProvider) return;
     currentUrl = window.location.href;
 
     if (isCurrentlyInjecting) unmountPayload();
@@ -31,48 +31,91 @@
       return;
     }
 
-    const isGenerating = currentProvider.isGenerating();
+    try {
+      const isGenerating = currentProvider.isGenerating();
 
-    if (isGenerating && !isCurrentlyInjecting) {
-      mountPayload();
-    } else if (!isGenerating && isCurrentlyInjecting) {
-      unmountPayload();
+      if (isGenerating && !isCurrentlyInjecting) {
+        mountPayload();
+      } else if (!isGenerating && isCurrentlyInjecting) {
+        unmountPayload();
+      }
+    } catch (e) {
+      console.error("State check error:", e);
+      if (isCurrentlyInjecting) unmountPayload();
     }
   }
 
   function mountPayload() {
+    if (isCurrentlyInjecting) {
+      unmountPayload();
+    }
+
+    const zombieContainer = document.getElementById("llm-wait-injector-root");
+    if (zombieContainer) {
+      zombieContainer.remove();
+    }
+
     isCurrentlyInjecting = true;
-    extAPI.runtime.sendMessage({ type: "START_WAIT" });
 
-    const targetElement = currentProvider.getContainer();
-    const theme = currentProvider.getThemeColors
-      ? currentProvider.getThemeColors()
-      : { background: "#fff", text: "#000" };
+    try {
+      extAPI.runtime.sendMessage({ type: "START_WAIT" }, () => {
+        let _ = extAPI.runtime.lastError;
+      });
+    } catch (e) {}
 
-    payloadContainer = document.createElement("div");
-    payloadContainer.id = "llm-wait-injector-root";
-    targetElement.appendChild(payloadContainer);
+    try {
+      const targetElement = currentProvider.getContainer();
+      if (!targetElement) {
+        isCurrentlyInjecting = false;
+        return;
+      }
 
-    if (window.LLMPayload) {
-      window.LLMPayload.mount(payloadContainer, theme);
+      const theme = currentProvider.getThemeColors
+        ? currentProvider.getThemeColors()
+        : { background: "#fff", text: "#000" };
+
+      payloadContainer = document.createElement("div");
+      payloadContainer.id = "llm-wait-injector-root";
+      targetElement.appendChild(payloadContainer);
+
+      if (window.LLMPayload && typeof window.LLMPayload.mount === "function") {
+        window.LLMPayload.mount(payloadContainer, theme);
+      }
+    } catch (e) {
+      console.error("Mount error:", e);
+      isCurrentlyInjecting = false;
+      if (payloadContainer) {
+        payloadContainer.remove();
+        payloadContainer = null;
+      }
     }
   }
 
   function unmountPayload() {
     isCurrentlyInjecting = false;
-    extAPI.runtime.sendMessage({ type: "STOP_WAIT" });
 
-    if (window.LLMPayload) {
-      window.LLMPayload.unmount();
+    try {
+      extAPI.runtime.sendMessage({ type: "STOP_WAIT" }, () => {
+        let _ = extAPI.runtime.lastError;
+      });
+    } catch (e) {}
+
+    if (window.LLMPayload && typeof window.LLMPayload.unmount === "function") {
+      try {
+        window.LLMPayload.unmount();
+      } catch (e) {
+        console.error("Payload unmount error:", e);
+      }
     }
 
     if (payloadContainer) {
-      payloadContainer.remove();
+      try {
+        payloadContainer.remove();
+      } catch (e) {}
       payloadContainer = null;
     }
   }
 
-  // Handle real-time settings sync
   extAPI.storage.onChanged.addListener(async (changes, areaName) => {
     if (areaName === "local" && currentProvider) {
       isEnabledForProvider = window.LLMSettings
@@ -83,7 +126,6 @@
     }
   });
 
-  // Handle SPA Navigation natively
   const originalPushState = history.pushState;
   history.pushState = function () {
     originalPushState.apply(this, arguments);
@@ -98,10 +140,8 @@
 
   window.addEventListener("popstate", handleUrlChange);
 
-  // Initialize first load
   handleUrlChange();
 
-  // DOM Observer runs only the lightweight state check
   const observer = new MutationObserver(() => {
     checkGeneratingState();
   });
@@ -111,4 +151,22 @@
     subtree: true,
     attributes: true,
   });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      checkGeneratingState();
+    }
+  });
+
+  window.addEventListener("focus", () => {
+    checkGeneratingState();
+  });
+
+  setInterval(() => {
+    if (window.location.href !== currentUrl) {
+      handleUrlChange();
+    } else {
+      checkGeneratingState();
+    }
+  }, 2000);
 })();
