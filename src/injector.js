@@ -12,7 +12,6 @@
 
     if (isCurrentlyInjecting) unmountPayload();
 
-    // Suspend DOM checks while loading new state
     currentProvider = null;
 
     const provider = window.LLMRegistry.getActiveProvider();
@@ -27,7 +26,10 @@
   }
 
   function checkGeneratingState() {
-    if (!currentProvider || !isEnabledForProvider) return;
+    if (!currentProvider || !isEnabledForProvider) {
+      if (isCurrentlyInjecting) unmountPayload();
+      return;
+    }
 
     const isGenerating = currentProvider.isGenerating();
 
@@ -69,6 +71,17 @@
       payloadContainer = null;
     }
   }
+
+  // Handle real-time settings sync
+  extAPI.storage.onChanged.addListener(async (changes, areaName) => {
+    if (areaName === "local" && currentProvider) {
+      isEnabledForProvider = window.LLMSettings
+        ? await window.LLMSettings.isProviderEnabled(currentProvider.name)
+        : true;
+
+      checkGeneratingState();
+    }
+  });
 
   // Handle SPA Navigation natively
   const originalPushState = history.pushState;
